@@ -1,6 +1,6 @@
 {
   "name": "@r-mcp/docs-extractor",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "MCP server for extracting documentation from web links",
   "keywords": [
     "mcp",
@@ -9,6 +9,9 @@
     "docs",
     "scraping"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "homepage": "https://github.com/CaptainCrouton89/docs-extractor#readme",
   "bugs": {
     "url": "https://github.com/CaptainCrouton89/docs-extractor/issues"
