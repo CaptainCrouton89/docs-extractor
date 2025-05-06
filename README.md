@@ -1,15 +1,15 @@
 # MCP Docs Extractor
 
-A [Model Context Protocol](https://modelcontextprotocol.github.io/) tool that extracts and summarizes documentation from web links for AI consumption.
+A tool that extracts and summarizes documentation from web links for AI consumption.
 
 ## Features
 
 - Extract and summarize documentation from web URLs
+- Intelligently crawl related pages within the same domain for comprehensive documentation
 - Convert web content into AI-optimized markdown
 - Remove unnecessary content like ads, navigation menus, etc.
 - Produce concise, well-structured documentation
 - Focus on relevant information based on user query
-- Intelligently crawl related pages within the same domain for comprehensive documentation
 
 ## Installation
 
@@ -98,19 +98,9 @@ When called, the tool:
 4. Processes the content through GPT-4.1 to extract and format relevant information
 5. Returns well-structured documentation in markdown format
 
-## Development
-
-```bash
-# Run in development mode
-pnpm dev
-
-# Build for production
-pnpm build
-```
-
 ## License
 
-[MIT](LICENSE)
+MIT
 
 ```
 
