@@ -27,6 +27,11 @@ try {
   config.mcpServers[projectName] = {
     command: "node",
     args: [path.join(currentDir, "dist/index.js")],
+    env: {
+      OPENAI_API_KEY: process.env.OPENAI_API_KEY || "your-openai-api-key",
+      FIRECRAWL_API_KEY:
+        process.env.FIRECRAWL_API_KEY || "your-firefall-api-key",
+    },
   };
 
   // Write the updated config back to the file
