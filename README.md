@@ -1,133 +1,58 @@
-# MCP Embedding Storage Server Boilerplate
+# MCP Docs Extractor
 
-A starter template for building an MCP server that stores and retrieves information using vector embeddings. This boilerplate provides the foundation for creating your own embedding-based knowledge store that can integrate with Claude or other MCP-compatible AI assistants.
-
-## Purpose
-
-This boilerplate helps you quickly start building:
-
-- A personal knowledge base that remembers information for your AI assistant
-- A semantic search interface for your documents or knowledge
-- A vector store integration for AI assistants
+A [Model Context Protocol](https://modelcontextprotocol.github.io/) tool that extracts documentation from web links.
 
 ## Features
 
-- Store content with automatically generated embeddings
-- Search content using semantic similarity
-- Access content through both tools and resources
-- Use pre-defined prompts for common operations
+- Extract and summarize documentation from web URLs
+- Convert web content into AI-optimized markdown
+- Remove unnecessary content like ads, navigation menus, etc.
+- Produce concise, well-structured documentation
 
-## How It Works
-
-This MCP server template connects to vector embedding APIs to:
-
-1. Process content and break it into sections
-2. Generate embeddings for each section
-3. Store both the content and embeddings in a database
-4. Enable semantic search using vector similarity
-
-When you search, the system finds the most relevant sections of stored content based on the semantic similarity of your query to the stored embeddings.
-
-## Getting Started
+## Installation
 
 ```bash
-# Clone the boilerplate
-git clone https://github.com/yourusername/mcp-embedding-storage-boilerplate.git
-cd mcp-embedding-storage-boilerplate
-
 # Install dependencies
 pnpm install
 
 # Build the project
-pnpm run build
+pnpm build
 
-# Start the server
-pnpm start
+# Install the server locally
+pnpm install-server
 ```
 
-## Configuring for Development
+### Env Variables
 
-After cloning and building, you'll need to:
+Add the following env variables to your mcp config file:
 
-1. Update the `package.json` with your project details
-2. Modify the API integration in `src/` to use your preferred embedding service
-3. Customize the tools and resources in `src/index.ts`
+```
+OPENAI_API_KEY=your_openai_api_key
+FIRECRAWL_API_KEY=your_firecrawl_api_key
+```
 
-## Usage with Claude for Desktop
+## Usage
 
-Add the following configuration to your `claude_desktop_config.json` file:
+This tool is designed to be used with Claude or other AI systems that support MCP.
 
-```json
+In Claude, you can extract documentation by calling:
+
+```
+{{mcp_docs-extractor_get-documentation}}
+```
+
+With the parameter:
+
+```
 {
-  "mcpServers": {
-    "your-embedding-storage": {
-      "command": "node /path/to/your/dist/index.js"
-    }
-  }
+  "links": ["https://example.com/docs"]
 }
 ```
 
-Then restart Claude for Desktop to connect to the server.
+## How It Works
 
-## Implementing Tools
+The tool uses:
 
-### store-content
-
-Stores content with automatically generated embeddings.
-
-Parameters:
-
-- `content`: The content to store
-- `path`: Unique identifier path for the content
-- `type` (optional): Content type (e.g., 'markdown')
-- `source` (optional): Source of the content
-- `parentPath` (optional): Path of the parent content (if applicable)
-
-### search-content
-
-Searches for content using vector similarity.
-
-Parameters:
-
-- `query`: The search query
-- `maxMatches` (optional): Maximum number of matches to return
-
-## Implementing Resources
-
-### search://{query}
-
-Resource template for searching content.
-
-Example usage: `search://machine learning basics`
-
-## Implementing Prompts
-
-### store-new-content
-
-A prompt to help store new content with embeddings.
-
-Parameters:
-
-- `path`: Unique identifier path for the content
-- `content`: The content to store
-
-### search-knowledge
-
-A prompt to search for knowledge.
-
-Parameters:
-
-- `query`: The search query
-
-## Integration Options
-
-You can integrate this boilerplate with various embedding APIs and vector databases:
-
-1. OpenAI Embeddings API
-2. Hugging Face embedding models
-3. Chroma, Pinecone, or other vector databases
-4. Vercel AI SDK
-
-## License
-
-MIT
+- FireCrawl to scrape web content
+- OpenAI's GPT-4.1 to format and optimize the content (this is where the magic happens)
+- MCP to integrate with Claude and other AI systems
