@@ -24,18 +24,7 @@ pnpm build
 pnpm install-server
 ```
 
-### Requirements
-
-You'll need:
-
-- Node.js (latest LTS recommended)
-- pnpm package manager
-- OpenAI API key
-- FireCrawl API key
-
-### Environment Variables
-
-Add the following env variables to your MCP config file:
+If you haven't globally defined your OPENAI_API_KEY and FIRECRAWL_API_KEY, you'll need to open the MCP config file and update the keys. 
 
 ```
 OPENAI_API_KEY=your_openai_api_key
