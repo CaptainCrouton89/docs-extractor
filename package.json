@@ -1,6 +1,6 @@
 {
   "name": "@r-mcp/docs-extractor",
-  "version": "1.2.0",
+  "version": "1.4.0",
   "description": "MCP server for extracting documentation from web links",
   "keywords": [
     "mcp",
@@ -24,6 +24,13 @@
   "author": "Silas Rhyneer",
   "type": "module",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "bin": {
     "mcp-docs-extractor": "dist/index.js"
   },

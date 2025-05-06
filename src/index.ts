@@ -1,18 +1,21 @@
 #!/usr/bin/env node
 
-import { createOpenAI } from "@ai-sdk/openai";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { generateText, tool } from "ai";
 import { z } from "zod";
 
-// Install with npm install @mendable/firecrawl-js
-import systemPrompt from "./system.prompt.js";
-import { firecrawlTool } from "./tools/firecrawl.js";
+// Export tools for npm package usage
+export { default as systemPrompt } from "./system.prompt.js";
+export { extractDocumentation } from "./tools/extractDocs/execution.js";
+export { extractDocsTool } from "./tools/extractDocs/tool.js";
+export { firecrawlTool } from "./tools/firecrawl.js";
 
-const openai = createOpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// Default export for convenience
+import { extractDocumentation as extractDocs } from "./tools/extractDocs/execution.js";
+export default extractDocs;
+
+// Install with npm install @mendable/firecrawl-js
+import { extractDocumentation } from "./tools/extractDocs/execution.js";
 // Create the MCP server
 const server = new McpServer({
   name: "docs-extractor",
@@ -39,32 +42,11 @@ server.tool(
       .describe("Whether to include the reasoning in the response"),
   },
   async ({ links, documentationFocus, includeReasoning }) => {
-    const prompt = `Extract the documentation for the following links: ${links.join(
-      ", "
-    )}${documentationFocus ? ` with a focus on ${documentationFocus}` : ""}`;
-
-    const { text } = await generateText({
-      model: openai("gpt-4.1"),
-      temperature: 0,
-      maxTokens: 10000,
-      system: systemPrompt,
-      prompt: prompt,
-      tools: {
-        getMarkdownFromLinks: firecrawlTool,
-      },
-
-      maxSteps: 10,
+    const documentation = await extractDocumentation({
+      links,
+      documentationFocus,
+      includeReasoning,
     });
-
-    let documentation = includeReasoning
-      ? text
-      : `<documentation>${
-          text.match(/<documentation>([\s\S]*?)<\/documentation>/)?.[1]
-        }</documentation>`;
-
-    if (!documentation) {
-      throw new Error("No documentation found");
-    }
 
     return {
       content: [
@@ -77,63 +59,19 @@ server.tool(
   }
 );
 
-// Start the server
-async function main() {
-  try {
-    const transport = new StdioServerTransport();
-    await server.connect(transport);
-    console.error("MCP Documentation Extractor running...");
-  } catch (error) {
-    console.error("Error starting server:", error);
-    process.exit(1);
-  }
-}
-
-export const docExtractorTool = tool({
-  description: "Get the documentation for one or more given links",
-  parameters: z.object({
-    documentationFocus: z
-      .string()
-      .optional()
-      .describe(
-        "A short description of the focus of the documentation to extract"
-      ),
-    links: z.array(z.string()),
-    includeReasoning: z
-      .boolean()
-      .optional()
-      .describe("Whether to include the reasoning in the response"),
-  }),
-  execute: async ({ links, documentationFocus, includeReasoning }) => {
-    const prompt = `Extract the documentation for the following links: ${links.join(
-      ", "
-    )}${documentationFocus ? ` with a focus on ${documentationFocus}` : ""}`;
-
-    const { text } = await generateText({
-      model: openai("gpt-4.1"),
-      temperature: 0,
-      maxTokens: 10000,
-      system: systemPrompt,
-      prompt: prompt,
-      tools: {
-        getMarkdownFromLinks: firecrawlTool,
-      },
-
-      maxSteps: 10,
-    });
-
-    let documentation = includeReasoning
-      ? text
-      : `<documentation>${
-          text.match(/<documentation>([\s\S]*?)<\/documentation>/)?.[1]
-        }</documentation>`;
-
-    if (!documentation) {
-      throw new Error("No documentation found");
+// Start the server only if this file is run directly
+if (import.meta.url === `file://${process.argv[1]}`) {
+  // Start the server
+  async function main() {
+    try {
+      const transport = new StdioServerTransport();
+      await server.connect(transport);
+      console.error("MCP Documentation Extractor running...");
+    } catch (error) {
+      console.error("Error starting server:", error);
+      process.exit(1);
     }
+  }
 
-    return documentation;
-  },
-});
-
-main().catch(console.error);
+  main().catch(console.error);
+}
