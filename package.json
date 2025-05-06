@@ -1,12 +1,32 @@
 {
-  "name": "mcp-conversation-memory",
-  "version": "1.0.0",
-  "description": "MCP server for storing and retrieving conversation memory",
-  "main": "dist/index.js",
-  "type": "module",
-  "bin": {
-    "mcp-conversation-memory": "./dist/index.js"
+  "name": "@r-mcp/docs-extractor",
+  "version": "1.1.0",
+  "description": "MCP server for extracting documentation from web links",
+  "keywords": [
+    "mcp",
+    "documentation",
+    "ai",
+    "docs",
+    "scraping"
+  ],
+  "homepage": "https://github.com/CaptainCrouton89/docs-extractor#readme",
+  "bugs": {
+    "url": "https://github.com/CaptainCrouton89/docs-extractor/issues"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CaptainCrouton89/docs-extractor.git"
+  },
+  "license": "MIT",
+  "author": "Silas Rhyneer",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "mcp-docs-extractor": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc && chmod 755 dist/index.js",
     "start": "node dist/index.js",
@@ -26,8 +46,5 @@
     "@types/node": "^20.17.24",
     "tsx": "^4.19.4",
     "typescript": "^5.8.2"
-  },
-  "files": [
-    "dist"
-  ]
+  }
 }

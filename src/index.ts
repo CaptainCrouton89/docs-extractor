@@ -3,7 +3,7 @@
 import { createOpenAI } from "@ai-sdk/openai";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { generateText } from "ai";
+import { generateText, tool } from "ai";
 import { z } from "zod";
 
 // Install with npm install @mendable/firecrawl-js
@@ -88,5 +88,52 @@ async function main() {
     process.exit(1);
   }
 }
+
+export const docExtractorTool = tool({
+  description: "Get the documentation for one or more given links",
+  parameters: z.object({
+    documentationFocus: z
+      .string()
+      .optional()
+      .describe(
+        "A short description of the focus of the documentation to extract"
+      ),
+    links: z.array(z.string()),
+    includeReasoning: z
+      .boolean()
+      .optional()
+      .describe("Whether to include the reasoning in the response"),
+  }),
+  execute: async ({ links, documentationFocus, includeReasoning }) => {
+    const prompt = `Extract the documentation for the following links: ${links.join(
+      ", "
+    )}${documentationFocus ? ` with a focus on ${documentationFocus}` : ""}`;
+
+    const { text } = await generateText({
+      model: openai("gpt-4.1"),
+      temperature: 0,
+      maxTokens: 10000,
+      system: systemPrompt,
+      prompt: prompt,
+      tools: {
+        getMarkdownFromLinks: firecrawlTool,
+      },
+
+      maxSteps: 10,
+    });
+
+    let documentation = includeReasoning
+      ? text
+      : `<documentation>${
+          text.match(/<documentation>([\s\S]*?)<\/documentation>/)?.[1]
+        }</documentation>`;
+
+    if (!documentation) {
+      throw new Error("No documentation found");
+    }
+
+    return documentation;
+  },
+});
 
 main().catch(console.error);
