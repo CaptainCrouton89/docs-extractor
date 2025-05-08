@@ -21,7 +21,7 @@ export async function extractDocumentation(options: {
   const { text } = await generateText({
     model: openai("gpt-4.1"),
     temperature: 0,
-    maxTokens: 10000,
+    maxTokens: 32768,
     system: systemPrompt,
     prompt: prompt,
     tools: {

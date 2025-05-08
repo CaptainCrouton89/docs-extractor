@@ -1,6 +1,6 @@
 {
   "name": "@r-mcp/docs-extractor",
-  "version": "1.4.0",
+  "version": "1.6.0",
   "description": "MCP server for extracting documentation from web links",
   "keywords": [
     "mcp",
@@ -28,7 +28,8 @@
   "exports": {
     ".": {
       "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     }
   },
   "bin": {
